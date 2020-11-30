@@ -31,9 +31,15 @@ To recreate the environment you can do the following: <span style="color:cyan">(
 ```
 conda env create -f environment.yml
 ```
+To activate the environment
+```
+conda activate intro
+```
 
-
-
+To deactivate the environment
+```
+conda deactivate
+```
 
 
 # Install python plugins to VSCode
