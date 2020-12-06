@@ -11,7 +11,6 @@ dependencies:
 # conda create --name intro python=3.6
 # conda create --name intro && conda activate intro && conda install python=3.6
 
-
 # conda env export > environment.yml
 # conda env create -f environment.yml
 

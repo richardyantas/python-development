@@ -1,2 +1,5 @@
 pytest
 pandas
+psycopg2
+terminaltables
+rich
