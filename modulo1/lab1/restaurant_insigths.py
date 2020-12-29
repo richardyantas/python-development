@@ -1,5 +1,7 @@
 # from dbmanager import DBManager
 import dbmanager
+from rich.console import Console
+from rich.table import Table
 
 class Insight:
 
@@ -86,8 +88,11 @@ class Insight:
         self.print_menu()
         
         while True:
-            line=input("> ")
-            action, parameter = line.split(" ", 1)
+            line=input("> ") 
+            elements = line.split(None, 1) # "1" option separate 2 elements as maximum
+            action, parameter = elements if len(elements)>1 else [elements[0],None]
+
+            print("action: ", action)
             if line=="menu": self.print_menu()
             if line=="quit": exit(1)
             else: self.run_query(action, parameter)
@@ -97,16 +102,25 @@ class Insight:
         if action in list(self.MENU.keys()):
             method = self.MENU[action]["method"]
             if parameter:
-                params =  [method, parameter]
+                res = getattr(self.m_dbmanager, method)(parameter)
             else:
-                params = [method]
-            print(params)
-            # res = dbmanager.send(params)
-            # print(res) # in table format  
+                res = getattr(self.m_dbmanager, method)()
+            #print(res)
+            self.print_table(res, action)
+    
+    def print_table(self, res, action):
+        table = Table(title= self.MENU[action]["title"])
 
+        for key in res[0]:
+            table.add_column(key, justify="right", style="cyan", no_wrap=True)
         
-    def foo(self):
-        return self.m_dbmanager.db
+        for i in range(0, len(res)):
+            row = []
+            for key in res[i]:
+                row.append(res[i][key])
+            table.add_row(*row)
+        console = Console()
+        console.print(table)
 
 insight = Insight()
-print(insight.start())a
+insight.start()
