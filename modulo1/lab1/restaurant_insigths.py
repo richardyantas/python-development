@@ -117,7 +117,7 @@ class Insight:
         for i in range(0, len(res)):
             row = []
             for key in res[i]:
-                row.append(res[i][key])
+                row.append(str(res[i][key]))
             table.add_row(*row)
         console = Console()
         console.print(table)
