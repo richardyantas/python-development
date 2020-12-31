@@ -4,6 +4,8 @@ from rich.table import Table
 from datetime import date
 import datetime
 import re
+#import client as cl
+from client import Client
 
 console = Console() 
 
@@ -104,67 +106,31 @@ class DBManager:
     # def price_by_dish(); end
 
     # def find_favourite_dish_by(); end
-
-    def create_client(self, data):
-        values = []
-        for value in data.values():
-            values.append("'" + re.sub("'", "''", value) + "'")
-        query = f"INSERT INTO clients ({','.join(data.keys())}) VALUES ({','.join(values)}) RETURNING *;"
-        print(query)
-        self.DB.execute(query)
-        self.DB_connect.commit()
-        return self.DB.fetchone()
-    
-    def find_client(self, client_name_entered):
-        self.DB.execute(f"SELECT * from clients where name='{client_name_entered}';")
-        return self.DB.fetchone()
-
-    def valid_client(self):
+    def model_manager(self,model):
         while True:
-            client_name_entered = input("Enter a client name: ")
-            client = self.find_client(client_name_entered)            
-            if client == None:
-                attempting = input("This client does not exist. Do you want to try again? Y/N")
-                if attempting == "N":
-                    break
-            else:
-                break
-        return client
-
-
-    def client_manager(self):
-        client = None
-        client_id = ""
-        while True:
-            print("\t\t 1.- Add a new client to visit")
-            print("\t\t 2.- Add an existent client to visit")
+            model.print_menu()
             opt = input("Choose an option: ")
             if opt=="1":
                 while True:
-                    data = {}
-                    data["name"] = input("name: ")
-                    data["age"] = input("age: ")
-                    data["gender"] = input("gender: ")
-                    data["nationality"] = input("nationality: ")
-                    data["occupation"] = input("occupation: ")
-                    if self.find_client(data["name"]):
-                        attempting = input("This client already exist. Do you want to try again? Y/N")
+                    model.fill_fields()
+                    if model.find():
+                        attempting = input("This model already exist. Do you want to try again? Y/N")
                         if attempting == "N":
                             break
                     else:
                         try:
-                            client = self.create_client(data)
+                            model_data = model.create()
                         except ValueError:
                             print("An  Error has ocurred in the client creation")
-                        break  
-                client_id = client["id"]
+                        break 
+                model_id = model["id"]
                 break
             if opt=="2":
-                client = self.valid_client()
+                model_data = model.valid()
                 break
             else:
                 print("Select a valid option")
-        return client # client_id
+        return model_data # model_id 
 
     def top_last_ten_models(self):
         while True:
@@ -193,11 +159,11 @@ class DBManager:
         # visit_date = str(input('Enter the visit date (e.g 2019-03-09): '))
         visit_date = "'2020-03-09'"
         
-
         # Client Section
-        client = self.client_manager()
-        print("client: ", client)
-        return [client]
+        client = Client()
+        client_data = self.model_manager(client)
+        print("client: ", client_data)
+        return [client_data]
         # Restaurant Section
         #restaurant_id = self.restaurant_manager()
 
