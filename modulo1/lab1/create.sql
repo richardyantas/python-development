@@ -39,3 +39,7 @@ CREATE TABLE visits (
   client_id int not null references clients(id),
   dishes_restaurants_id int not null references dishes_restaurants(id)
 );
+
+
+
+

@@ -55,8 +55,19 @@ class Insight:
             "title": "Favorite dish",
             "description": "The favorite dish for [age=number | gender=string | occupation=string | nationality=string]",
             "method": "find_favourite_dish_by"
+        },
+        "11" : {
+            "title" : "Insert a new visit to list",
+            "description": "A new visit",
+            "method": "insert_a_new_visit"
+        },
+        "12" : {
+            "title" : "Top last ten models",
+            "description": "Show the last ten models",
+            "method" : "top_last_ten_models"
         }
     }
+    
 
     def __init__(self):
         self.m_dbmanager = dbmanager.DBManager()
@@ -79,9 +90,12 @@ class Insight:
                 8. The total sales of all the restaurants group by month [order=[asc | desc]]\n \
                 9. The list of dishes and the restaurant where you can find it at a lower price.\n \
                 10. The favorite dish for [age=number | gender=string | occupation=string | nationality=string]\n \
+                11. Insert a new dataset to list \n \
+                12. Show the last ten models \n \
                 ---\n \
                 Pick a number from the list and an [option] if neccesary\n"
         )
+        print ("\t\t Menu|Quit")
     
     def start(self):
         self.print_welcome()
@@ -93,8 +107,8 @@ class Insight:
             action, parameter = elements if len(elements)>1 else [elements[0],None]
 
             print("action: ", action)
-            if line=="menu": self.print_menu()
-            if line=="quit": exit(1)
+            if line.lower()=="menu": self.print_menu()
+            if line.lower()=="quit": exit(1)
             else: self.run_query(action, parameter)
             self.print_menu()
             
