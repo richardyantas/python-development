@@ -22,7 +22,24 @@ class Client:
         self.nationality = input("nationality: ")
         self.occupation = input("occupation: ")
 
-    def create(self, data):
+        # self.data_ = {
+        #             "name": f"{self.name}",
+        #             "age": f"{self.age}",
+        #             "gender": f"{self.gender}",
+        #             "nationality": f"{self.nationality}",
+        #             "occupation": f"{self.occupation}"
+        #         }
+        # return self.data_
+
+    #def create(self, data):
+    def create(self):
+        data = {
+                    "name": f"{self.name}",
+                    "age": f"{self.age}",
+                    "gender": f"{self.gender}",
+                    "nationality": f"{self.nationality}",
+                    "occupation": f"{self.occupation}"
+                }
         values = []
         for value in data.values():
             values.append("'" + re.sub("'", "''", value) + "'")
@@ -33,13 +50,14 @@ class Client:
         return self.DB.fetchone()
     
     def find(self):
-        self.DB.execute(f"SELECT * from clients where name='{self.name_entered}';")
+        self.DB.execute(f"SELECT * from clients where name='{self.name}';")
         return self.DB.fetchone()
 
     def valid(self):
         while True:
             self.name_entered = input("Enter a client name: ")
-            data_row = self.find()            
+            self.DB.execute(f"SELECT * from dishes where name='{self.name_entered}';")
+            data_row = self.DB.fetchone()           
             if data_row == None:
                 attempting = input("This client does not exist. Do you want to try again? Y/N")
                 if attempting == "N":

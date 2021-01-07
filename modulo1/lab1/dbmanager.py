@@ -4,9 +4,9 @@ from rich.table import Table
 from datetime import date
 import datetime
 import re
-#import client as cl
 from client import Client
-
+from restaurant import Restaurant
+from dish import Dish
 console = Console() 
 
 class DBManager:
@@ -112,6 +112,7 @@ class DBManager:
             opt = input("Choose an option: ")
             if opt=="1":
                 while True:
+                    #data = model.fill_fields()
                     model.fill_fields()
                     if model.find():
                         attempting = input("This model already exist. Do you want to try again? Y/N")
@@ -121,9 +122,10 @@ class DBManager:
                         try:
                             model_data = model.create()
                         except ValueError:
-                            print("An  Error has ocurred in the client creation")
+                            print("An  Error has ocurred in the model creation")
                         break 
-                model_id = model["id"]
+                model_id = model_data["id"]
+                #model_id = model.id
                 break
             if opt=="2":
                 model_data = model.valid()
@@ -155,73 +157,48 @@ class DBManager:
         return self.DB.fetchall()
 
     def insert_a_new_visit(self):
-
-        # visit_date = str(input('Enter the visit date (e.g 2019-03-09): '))
-        visit_date = "'2020-03-09'"
-        
         # Client Section
         client = Client()
+        print(type(client))
         client_data = self.model_manager(client)
         print("client: ", client_data)
-        return [client_data]
+
         # Restaurant Section
-        #restaurant_id = self.restaurant_manager()
+        restaurant = Restaurant()
+        restaurant_data = self.model_manager(restaurant)
+        print("restaurant: ", restaurant_data)
+        #return [restaurant_data]
 
-        # visit_date_obj = datetime.datetime.strptime(visit_date, '%Y-%m-%d')
-        # visit_date_obj = visit_date_obj.date()
-        # print(type(visit_date_obj))
+        # Dish Section
+        dish = Dish()
+        dish_data = self.model_manager(dish)
+        print("dish: ", dish_data)
+        #return [dish_data]
 
-        # query = f"INSERT INTO visits(visit_date) VALUES({visit_date});"
-        # self.DB.execute(query)
-        # self.DB_connect.commit()
+        #Dish_restaurant Section
+        dish_data_id = dish_data["id"]
+        restaurant_data_id = restaurant_data["id"]
+        self.DB.execute(f"SELECT * from dishes_restaurants where dish_id='{dish_data_id}' AND restaurant_id='{restaurant_data_id}';")
+        dish_restaurant_data = self.DB.fetchone() 
+        if dish_restaurant_data == None:
+            price_data = input("price: ")
+            query = f"INSERT INTO dishes_restaurants (dish_id, restaurant_id, price_dish) VALUES ({dish_data_id}, {restaurant_data_id}, {price_data}) RETURNING *;"
+            self.DB.execute(query)
+            self.DB_connect.commit()
+            dish_restaurant_data = self.DB.fetchone()
 
-        # client_name = input('Client name: ')
-        # query = f"INSERT INTO clients(name) VALUES({client_name});"
-        # self.DB.execute(query)
-
-        # age = input('Age: ')
-        # query = f"INSERT INTO clients(age) VALUES({age});"
-        # self.DB.execute(query)
-
-        # gender = input('Gender Male/Female: ')
-        # query = f"INSERT INTO clients(gender) VALUES({gender});"
-        # self.DB.execute(query)
-
-        # occupation = input('Occupation: ')
-        # query = f"INSERT INTO clients(occupation) VALUES({occupation});"
-        # self.DB.execute(query)
-
-        # nationality = input('Nationality: ')
-        # query = f"INSERT INTO clients(nationality) VALUES({nationality});"
-        # self.DB.execute(query)
-
-        # restaurant_name = input('Restaurant name: ')
-        # query = f"INSERT INTO restaurants(name) VALUES({restaurant_name});"
-        # self.DB.execute(query)
-
-        # restaurant_category = input('Category of the restaurant: ')
-        # query = f"INSERT INTO restaurants(category) VALUES({restaurant_category})"
-        # self.DB.execute(query)
-
-        # city = input('City where It is located: ')
-        # query = f"INSERT INTO restaurants(city) VALUES({city});"
-        # self.DB.execute(query)
-
-        # address = input('Address: ')
-        # query = f"INSERT INTO restaurants(address) VALUES({address});"
-        # self.DB.execute(query)
-
-        # dish = input('Dish: ')
-        # query = f"INSERT INTO dishes(name) VALUES({dish});"
-        # self.DB.execute(query)
-
-        # price = input('Price of the dish in dollars (e.g 17): ')
-        # query = f"INSERT INTO dishes_restaurants(price_dish) VALUES({price});"
-        # self.DB.execute(query)
-    # def top_last_ten_visitors(self):
-    #     query = f"SELECT "
-    #     return "Data are inserted"
-        
+        #Visits Section
+        dish_restaurant_id = dish_restaurant_data["id"]
+        client_id = client_data["id"]
+        self.DB.execute(f"SELECT * from visits where dishes_restaurants_id='{dish_restaurant_id}' AND client_id='{client_id}';")
+        visit_data = self.DB.fetchone()
+        if visit_data == None:
+            visit_date = str(input('Enter the visit date (e.g 2019-03-09): '))
+            query = f"INSERT INTO visits (dishes_restaurants_id, client_id, visit_date) VALUES ({dish_restaurant_id}, {client_id}, '{visit_date}') RETURNING *;"
+            self.DB.execute(query)
+            self.DB_connect.commit()
+            visit_data = self.DB.fetchone()
+        return [visit_data]
 
 """ Q&A 
 
