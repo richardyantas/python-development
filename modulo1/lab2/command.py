@@ -12,3 +12,9 @@
 # English
 
 # docker
+
+# cmake -> shared and static library
+
+# c++
+
+# cuda
