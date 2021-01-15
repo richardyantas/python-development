@@ -3,5 +3,5 @@ pandas
 psycopg2
 terminaltables
 rich
-seaborn
+#seaborn
 sklearn
