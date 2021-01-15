@@ -1,4 +1,4 @@
-import psycopg2.extras
+    import psycopg2.extras
 from rich.console import Console
 from rich.table import Table
 from datetime import date

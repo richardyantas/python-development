@@ -9,6 +9,10 @@ from rich.table import Table
 # python insert_data.py data.csv
 # pip-compile requirements.in
 # pip-sync requirements.txt
+# psql -d flashback
+# \dt
+# \d commands;
+# dropdb flashback
 
 class Flashback:
 
@@ -19,9 +23,9 @@ class Flashback:
             "method": "list_ruby_ror"
         },
         "2" : {
-            "title": "List of Python/Conda Commands",
-            "description": "List of unique dishes included in the research",
-            "method": "list_dishes"
+            "title": "Insert of Ruby/Rails Commands",
+            "description": "Insert of Ruby/Rails Commands for development and good practices",
+            "method": "insert_ruby_ror"
         },
         "3" : {
             "title": "List of Linux Commands",
@@ -29,49 +33,59 @@ class Flashback:
             "method": "distribution_clients_by"
         },
         "4" : {
-            "title": "List of Ideas",
+            "title": "List of R commands",
             "description": "Top 10 restaurants by the number of visitors.",
             "method": "top_by_visitors"
         },
         "5" : {
-            "title": "List of",
+            "title": "List of SQL commands",
             "description": "Top 10 restaurants by the sum of sales.",
             "method": "top_by_sales"
         },
         "6" : {
-            "title": "Top 10 restaurants by average expense per user",
+            "title": "List of CMake commands",
             "description": "Top 10 restaurants by the average expense of their clients.",
             "method": "top_by_average_expense_user"
         },
         "7" : {
-            "title": " Average consumer expenses",
+            "title": "List of Docker commands",
             "description": "The average consumer expense group by [group=[age | gender | occupation | nationality]]",
             "method": "average_consumer_expenses_by"
         },
         "8" : {
-            "title": "Total sales by month",
+            "title": "List of Git commands",
             "description": "The total sales of all the restaurants group by month [order=[asc | desc]]",
             "method": "total_sales"
         },
         "9" : {
-            "title": "Best price for dish",
+            "title": "List of Css/Html commands",
             "description": "The list of dishes and the restaurant where you can find it at a lower price",
             "method": "price_by_dish"
         },
         "10" : {
-            "title": "Favorite dish",
+            "title": "List of Javascript commands",
             "description": "The favorite dish for [age=number | gender=string | occupation=string | nationality=string]",
             "method": "find_favourite_dish_by"
         },
         "11" : {
-            "title" : "Insert a new visit to list",
+            "title" : "List of Python/Conda Commands",
             "description": "A new visit",
             "method": "insert_a_new_visit"
         },
         "12" : {
-            "title" : "Top last ten models",
+            "title" : "List of C++ commands",
             "description": "Show the last ten models",
             "method" : "top_last_ten_models"
+        },
+        "13" : { 
+            "title" : "List English",
+            "description" : "Show strutures for the English language",
+            "method" : "english_language_list"
+        },
+        "14" : { 
+            "title" : "Insert English",
+            "description": "This option is to insert data to some english tables",
+            "method": "english_language_insert"
         }
     }
     
@@ -99,11 +113,10 @@ class Flashback:
             line=input("> ") 
             elements = line.split(None, 1) # "1" option separate 2 elements as maximum
             action, parameter = elements if len(elements)>1 else [elements[0],None]
-
             print("action: ", action)
             if line.lower()=="menu": self.print_menu()
             if line.lower()=="quit": exit(1)
-            # else: self.run_query(action, parameter)
+            else: self.run_query(action, parameter)
             self.print_menu()
             
     def run_query(self, action, parameter=0):
@@ -113,13 +126,14 @@ class Flashback:
                 res = getattr(self.m_dbmanager, method)(parameter)
             else:
                 res = getattr(self.m_dbmanager, method)()
-            #print(res)
+            print("res: ", res)
             self.print_table(res, action)
     
     def print_table(self, res, action):
         table = Table(title= self.MENU[action]["title"])
         for key in res[0]:
-            table.add_column(key, justify="right", style="cyan", no_wrap=True)        
+            #table.add_column(key, justify="right", style="cyan", no_wrap=True)
+            table.add_column(key, style="cyan", no_wrap=True)        
         for i in range(0, len(res)):
             row = []
             for key in res[i]:
