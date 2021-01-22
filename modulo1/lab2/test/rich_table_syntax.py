@@ -29,3 +29,6 @@ for i in range(0, len(res)):
     table.add_row(*row)
 console = Console()
 console.print(table)
+
+# map
+# filter
